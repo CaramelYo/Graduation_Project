@@ -16,6 +16,7 @@ public class Model : MonoBehaviour {
     WaitForSeconds delay = new WaitForSeconds(1.7f), jumpdelay = new WaitForSeconds(.1f);
     [SerializeField]
     float speed, turnspeed, jumpforce;
+    bool isJump = false;
     //Vector3 movedirection = Vector3.zero;
 
     // Use this for initialization
@@ -41,7 +42,11 @@ public class Model : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
-        switch(collision.transform.name)
+        Debug.Log(collision.relativeVelocity.y);
+        if (collision.relativeVelocity.y > 1f)
+            isJump = false;
+
+        switch (collision.transform.name)
         {
             case "Wall":
                 skin1.material.color = Color.red;
@@ -49,12 +54,7 @@ public class Model : MonoBehaviour {
                 break;
             case "Spring":
                 if(collision.relativeVelocity.y > 1f)
-                {
-                    Debug.Log(collision.relativeVelocity.y);
-                    Debug.Log(collision.relativeVelocity);
-                    Debug.Log("jump");
                     Jump(600f);
-                }
                 break;
         }
     }
@@ -74,12 +74,14 @@ public class Model : MonoBehaviour {
 
     void Jump()
     {
+        isJump = true;
         animator.SetBool("Jump", true);
         rb.AddForce(transform.up * jumpforce);
     }
 
     void Jump(float jumpforce1)
     {
+        isJump = true;
         animator.SetBool("Jump", true);
         rb.AddForce(transform.up * jumpforce1);
     }
@@ -91,7 +93,7 @@ public class Model : MonoBehaviour {
             transform.localPosition = original_position;
         if(animator)
         {
-            first_info = animator.GetCurrentAnimatorStateInfo(1);
+            //first_info = animator.GetCurrentAnimatorStateInfo(1);
 
             //to move
             //going forward action 
@@ -116,7 +118,7 @@ public class Model : MonoBehaviour {
             }
             
 
-            if (Input.GetKeyDown(KeyCode.W) && first_info.IsName("First Layer.Null State"))
+            if (Input.GetKeyDown(KeyCode.W) && !isJump)
             {
                 Jump();
                 //transform.localPosition += transform.up * jumpforce * speed * Time.deltaTime; ;
