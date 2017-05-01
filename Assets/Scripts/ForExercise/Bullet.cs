@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
 	void Start () {
 	
 	}
-	
+	//test
 	// Update is called once per frame
 	void Update () {
         transform.localPosition += shootspeed * Time.deltaTime * Vector3.right;
